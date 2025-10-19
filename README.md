@@ -2,7 +2,7 @@
 
 A starter project to kickstart new projects.
 
-## Packages
+### Packages
 
 - [x] Laravel Pail          - _tailing logs_
 - [x] Laravel Pest          - _testing framework_
@@ -11,9 +11,10 @@ A starter project to kickstart new projects.
 - [x] Laravel Sail          - _docker_
     - [x] MySQL
     - [x] Mailpit
-- [x] Laravel pint          - _linting_
+- [x] Laravel Pint          - _linting_
+- [x] Laravel Socialite     - _oauth_
 
-## Features
+### Features
 
 - [ ] Strict PEST configuration
 - [ ] Authentication
