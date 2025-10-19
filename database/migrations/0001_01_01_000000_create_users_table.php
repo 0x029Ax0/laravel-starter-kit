@@ -21,8 +21,10 @@ return new class extends Migration
             $table->string('email_verification_code')->nullable();
             $table->string('password');
             $table->string('password_recovery_code')->nullable();
+            $table->unsignedBigInteger('active_character_id')->nullable();
             $table->string('oauth_provider')->nullable();
             $table->string('oauth_provider_id')->nullable();
+            $table->string('avatar_url')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

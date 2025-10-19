@@ -5,17 +5,21 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Facades\Authentication;
-use App\Http\Requests\Api\Auth\ChangePasswordRequest;
-use App\Http\Requests\Api\Auth\DeleteAccountRequest;
-use App\Http\Requests\Api\Auth\LoginRequest;
-use App\Http\Requests\Api\Auth\LogoutRequest;
-use App\Http\Requests\Api\Auth\RecoverAccountRequest;
-use App\Http\Requests\Api\Auth\RegisterRequest;
-use App\Http\Requests\Api\Auth\ResetPasswordRequest;
-use App\Http\Requests\Api\Auth\UpdateProfileRequest;
-use App\Http\Requests\Api\Auth\VerifyEmailRequest;
+use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\DeleteAccountRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\LogoutRequest;
+use App\Http\Requests\Auth\RecoverAccountRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Http\Requests\Auth\UpdateProfileRequest;
+use App\Http\Requests\Auth\VerifyEmailRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 final class AuthController extends Controller
 {
@@ -175,6 +179,7 @@ final class AuthController extends Controller
                     'name' => $oauthUser->name,
                     'email' => $oauthUser->email,
                     'email_verified_at' => now(),
+                    'password' => Hash::make(Str::random(40)),
                     'oauth_provider' => $provider,
                     'oauth_provider_id' => $oauthUser->id,
                     'avatar_url' => $oauthUser->avatar,

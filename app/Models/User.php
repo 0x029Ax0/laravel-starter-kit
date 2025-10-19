@@ -22,11 +22,14 @@ final class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'email_verified_at',
         'email_verification_code',
         'password',
         'password_recovery_code',
+        'active_character_id',
         'oauth_provider',
         'oauth_provider_id',
+        'avatar_url',
     ];
 
     /**

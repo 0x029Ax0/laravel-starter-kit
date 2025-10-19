@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
+use Throwable;
+
 abstract class Controller
 {
     public $inProduction;

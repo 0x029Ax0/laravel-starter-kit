@@ -23,10 +23,10 @@ final class UserController extends Controller
     public function getUsers()
     {
         return $this->handle(function () {
-            $users = Users::getAll();
+            $users = Users::getUsers();
 
             return response()->json([
-                'users' => UserResource::collect($users),
+                'users' => UserResource::collection($users)->resolve(),
             ]);
         });
     }
