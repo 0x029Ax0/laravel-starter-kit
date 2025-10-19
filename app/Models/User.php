@@ -25,6 +25,8 @@ final class User extends Authenticatable
         'email_verification_code',
         'password',
         'password_recovery_code',
+        'oauth_provider',
+        'oauth_provider_id',
     ];
 
     /**
