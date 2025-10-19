@@ -16,23 +16,28 @@ A starter project to kickstart new projects.
 
 ### Features
 
-- [ ] Strict PEST configuration
-- [ ] Authentication
-    - [ ] User model
-    - [ ] User service
-    - [ ] Users facade
-    - [ ] Auth controller
-    - [ ] API routes
-    - [ ] Traditional authentication
-        - [ ] Register
-        - [ ] Login
-        - [ ] Logout
-        - [ ] Recover account
-        - [ ] Reset password
-        - [ ] Change password
-        - [ ] Update account
-        - [ ] Delete account
-    - [ ] OAuth authentication
-        - [ ] Google
-        - [ ] Github
+- [x] Strict PEST configuration
+- [x] Authentication
+    - [x] Auth service
+    - [x] Auth controller
+    - [x] API routes
+    - [x] Traditional authentication
+        - [x] Register
+        - [x] Login
+        - [x] Logout
+        - [x] Recover account
+        - [ ] Toggle if email should be verified
+        - [ ] Send verification email after register
+        - [ ] Verify email
+        - [x] Reset password
+        - [x] Change password
+        - [x] Update account
+        - [x] Delete account
+    - [x] OAuth authentication
+        - [x] Google
+        - [x] Github
+- [x] Users
+    - [x] User model
+    - [x] User service
+    - [x] Users facade
 - [ ] Authorization
