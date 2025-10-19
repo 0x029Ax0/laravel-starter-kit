@@ -1,31 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+declare(strict_types=1);
 
-use Exception;
+namespace App\Http\Controllers;
 
 use App\Facades\Authentication;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use App\Http\Requests\Api\Auth\LoginRequest;
-use App\Http\Requests\Api\Auth\RegisterRequest;
-use App\Http\Requests\Api\Auth\RecoverAccountRequest;
-use App\Http\Requests\Api\Auth\ResetPasswordRequest;
-use App\Http\Requests\Api\Auth\VerifyEmailRequest;
-use App\Http\Requests\Api\Auth\LogoutRequest;
 use App\Http\Requests\Api\Auth\ChangePasswordRequest;
-use App\Http\Requests\Api\Auth\UpdateProfileRequest;
 use App\Http\Requests\Api\Auth\DeleteAccountRequest;
+use App\Http\Requests\Api\Auth\LoginRequest;
+use App\Http\Requests\Api\Auth\LogoutRequest;
+use App\Http\Requests\Api\Auth\RecoverAccountRequest;
+use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Http\Requests\Api\Auth\ResetPasswordRequest;
+use App\Http\Requests\Api\Auth\UpdateProfileRequest;
+use App\Http\Requests\Api\Auth\VerifyEmailRequest;
+use App\Http\Resources\UserResource;
+use Exception;
 
-class AuthController extends Controller
+final class AuthController extends Controller
 {
     private $tokenName;
+
     private $supportedProviders;
 
     public function __construct()
     {
-        $this->tokenName = env("API_TOKEN_NAME", "starter-kit");
-        $this->supportedProviders = ["github", "google"];
+        $this->tokenName = env('API_TOKEN_NAME', 'starter-kit');
+        $this->supportedProviders = ['github', 'google'];
     }
 
     public function postLogin(LoginRequest $request)
@@ -33,6 +34,7 @@ class AuthController extends Controller
         return $this->handle(function () use ($request) {
             $user = Authentication::login($request);
             $token = $user->createToken($this->tokenName);
+
             return response()->json([
                 'user' => new UserResource($user),
                 'token' => $token->plainTextToken,
@@ -45,6 +47,7 @@ class AuthController extends Controller
         return $this->handle(function () use ($request) {
             $user = Authentication::register($request);
             $token = $user->createToken($this->tokenName);
+
             return response()->json([
                 'user' => new UserResource($user),
                 'token' => $token->plainTextToken,
@@ -56,6 +59,7 @@ class AuthController extends Controller
     {
         return $this->handle(function () use ($request) {
             Authentication::recoverAccount($request);
+
             return response()->json([], 200);
         });
     }
@@ -64,6 +68,7 @@ class AuthController extends Controller
     {
         return $this->handle(function () use ($request) {
             Authentication::resetPassword($request);
+
             return response()->json([], 200);
         });
     }
@@ -72,6 +77,7 @@ class AuthController extends Controller
     {
         return $this->handle(function () use ($request) {
             $user = Authentication::verifyEmail($request);
+
             return response()->json([], 200);
         });
     }
@@ -80,6 +86,7 @@ class AuthController extends Controller
     {
         return $this->handle(function () use ($request) {
             Authentication::logout($request);
+
             return response()->json([], 200);
         });
     }
@@ -88,6 +95,7 @@ class AuthController extends Controller
     {
         return $this->handle(function () use ($request) {
             $user = Authentication::changePassword($request);
+
             return response()->json([], 200);
         });
     }
@@ -96,6 +104,7 @@ class AuthController extends Controller
     {
         return $this->handle(function () use ($request) {
             $user = Authentication::updateProfile($request);
+
             return response()->json([], 200);
         });
     }
@@ -104,6 +113,7 @@ class AuthController extends Controller
     {
         return $this->handle(function () use ($request) {
             Authentication::deleteAccount($request);
+
             return response()->json([], 200);
         });
     }
@@ -113,15 +123,15 @@ class AuthController extends Controller
         return $this->handle(function () use ($provider) {
             switch ($provider) {
                 default:
-                case "google":
-                    $url = Socialite::driver("google")->redirect()->headers->get("location");
+                case 'google':
+                    $url = Socialite::driver('google')->redirect()->headers->get('location');
                     break;
-                case "github":
-                    $url = Socialite::driver("github")->redirect()->headers->get("location");
+                case 'github':
+                    $url = Socialite::driver('github')->redirect()->headers->get('location');
                     break;
             }
 
-            return response()->json(["redirect_url" => $url]);
+            return response()->json(['redirect_url' => $url]);
         });
     }
 
@@ -129,31 +139,30 @@ class AuthController extends Controller
     {
         return $this->handle(function () use ($provider) {
             // Ensure provider is supported
-            if (!in_array($provider, $this->supportedProviders)) throw new Exception("Invalid provider received.");
+            if (! in_array($provider, $this->supportedProviders)) {
+                throw new Exception('Invalid provider received.');
+            }
 
             // Retrieve user's account from the provider service
             $oauthUser = Socialite::driver($provider)->stateless()->user();
 
             // Attempt to find the user based on their provider service account's email address
-            $user = User::where("email", $oauthUser->email)->first();
+            $user = User::where('email', $oauthUser->email)->first();
 
             // Check if the user exists but with a different provider
-            if ($user && $user->oauth_provider !== null && $user->oauth_provider !== $provider)
-            {
-                throw new Exception("You have already signed up with a different platform.");
+            if ($user && $user->oauth_provider !== null && $user->oauth_provider !== $provider) {
+                throw new Exception('You have already signed up with a different platform.');
             }
 
             // Check if the user exists with the given provider
-            if ($user && $user->oauth_provider === $provider)
-            {
+            if ($user && $user->oauth_provider === $provider) {
                 $user->oauth_provider_id = $oauthUser->id;
                 $user->avatar_url = $oauthUser->avatar;
                 $user->save();
             }
 
             // Check if the user exists but is not associated with a oauth provider yet
-            if ($user && $user->oauth_provider === null)
-            {
+            if ($user && $user->oauth_provider === null) {
                 $user->oauth_provider = $provider;
                 $user->oauth_provider_id = $oauthUser->id;
                 $user->avatar_url = $oauthUser->avatar;
@@ -161,26 +170,25 @@ class AuthController extends Controller
             }
 
             // If user does not exist, create it
-            if (!$user)
-            {
+            if (! $user) {
                 $user = User::create([
-                    "name" => $oauthUser->name,
-                    "email" => $oauthUser->email,
-                    "email_verified_at" => now(),
-                    "oauth_provider" => $provider,
-                    "oauth_provider_id" => $oauthUser->id,
-                    "avatar_url" => $oauthUser->avatar,
+                    'name' => $oauthUser->name,
+                    'email' => $oauthUser->email,
+                    'email_verified_at' => now(),
+                    'oauth_provider' => $provider,
+                    'oauth_provider_id' => $oauthUser->id,
+                    'avatar_url' => $oauthUser->avatar,
                 ]);
             }
-    
+
             // Login the user
             auth()->login($user);
-    
+
             // Create a token
             $token = $user->createToken('auth_token')->plainTextToken;
 
             // Redirect to the frontend with the token
-            return redirect(env('FRONTEND_URL')."/oauth/callback/".$token);
+            return redirect(env('FRONTEND_URL').'/oauth/callback/'.$token);
         });
     }
 }

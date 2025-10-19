@@ -1,28 +1,33 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+declare(strict_types=1);
+
+namespace App\Http\Controllers;
 
 use App\Facades\Users;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 
-class UserController extends Controller
+final class UserController extends Controller
 {
     public function getUser()
     {
-        $user = Users::getCurrent();
-
         return $this->handle(function () {
-            "user" => new UserResource($user),
+            $user = Users::getCurrent();
+
+            return response()->json([
+                'user' => new UserResource($user),
+            ]);
         });
     }
 
     public function getUsers()
     {
-        $users = Users::getAll();
-
         return $this->handle(function () {
-            "users" => UserResource::collect($users),
+            $users = Users::getAll();
+
+            return response()->json([
+                'users' => UserResource::collect($users),
+            ]);
         });
     }
 }

@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
 
@@ -21,7 +19,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('logout', [AuthController::class, 'postLogout']);
             Route::post('change-password', [AuthController::class, 'postChangePassword']);
             Route::post('update-profile', [AuthController::class, 'postUpdateProfile']);
-            Route::post('delete-account', [AuthController::Class, 'postDeleteAccount']);
+            Route::post('delete-account', [AuthController::class, 'postDeleteAccount']);
         });
         Route::group(['prefix' => 'oauth', 'middleware' => 'web'], function () {
             Route::get('redirect/{provider}', [AuthController::class, 'getOAuthRedirect']);

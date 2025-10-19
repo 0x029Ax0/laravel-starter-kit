@@ -20,12 +20,12 @@ abstract class Controller
         } catch (Throwable $e) {
             // Log error
             Log::error($e);
-            
+
             // Return generic error message
             $response = ['message' => 'Internal Server Error'];
 
             // Add error to response if not in production
-            if (!$this->inProduction) {
+            if (! $this->inProduction) {
                 $response['error'] = $e->getMessage();
             }
 

@@ -1,31 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use Hash;
-use Exception;
-
-use App\Models\User;
-
-use App\Http\Requests\Api\Auth\LoginRequest;
-use App\Http\Requests\Api\Auth\RegisterRequest;
-use App\Http\Requests\Api\Auth\RecoverAccountRequest;
-use App\Http\Requests\Api\Auth\ResetPasswordRequest;
-use App\Http\Requests\Api\Auth\VerifyEmailRequest;
-use App\Http\Requests\Api\Auth\LogoutRequest;
 use App\Http\Requests\Api\Auth\ChangePasswordRequest;
-use App\Http\Requests\Api\Auth\UpdateProfileRequest;
 use App\Http\Requests\Api\Auth\DeleteAccountRequest;
-
+use App\Http\Requests\Api\Auth\LoginRequest;
+use App\Http\Requests\Api\Auth\LogoutRequest;
+use App\Http\Requests\Api\Auth\RecoverAccountRequest;
+use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Http\Requests\Api\Auth\ResetPasswordRequest;
+use App\Http\Requests\Api\Auth\UpdateProfileRequest;
+use App\Http\Requests\Api\Auth\VerifyEmailRequest;
+use App\Models\User;
+use Exception;
+use Hash;
 use Illuminate\Support\Str;
 
-class AuthenticationService
+final class AuthenticationService
 {
     public function login(LoginRequest $request): User
     {
         $user = User::where('email', $request->email)->first();
 
-        if (!$user or !Hash::check($request->password, $user->password)) {
+        if (! $user or ! Hash::check($request->password, $user->password)) {
             throw new Exception('Invalid credentials');
         }
 
@@ -59,14 +58,18 @@ class AuthenticationService
         $user->password = bcrypt($request->password);
         $user->save();
     }
-    
+
     public function verifyEmail(VerifyEmailRequest $request)
     {
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) return;
+        if (! $user) {
+            return;
+        }
 
-        if ($user->email_verification_code != $user->email_verification_code) return;
+        if ($user->email_verification_code !== $user->email_verification_code) {
+            return;
+        }
 
         $user->email_verified_at = now();
         $user->save();
@@ -93,7 +96,7 @@ class AuthenticationService
 
         return $user;
     }
-    
+
     public function deleteAccount(DeleteAccountRequest $request)
     {
         $user = auth()->user();
