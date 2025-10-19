@@ -40,4 +40,3 @@ A starter project to kickstart new projects.
     - [x] User model
     - [x] User service
     - [x] Users facade
-- [ ] Authorization
