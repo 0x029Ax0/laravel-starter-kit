@@ -16,9 +16,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('register', [AuthController::class, 'postRegister']);
         Route::post('recover-account', [AuthController::class, 'postRecoverAccount']);
         Route::post('reset-password', [AuthController::class, 'postResetPassword']);
-        Route::post('verify-email-address', [AuthController::class, 'postVerifyEmailAddress']);
+        Route::post('verify-email', [AuthController::class, 'postVerifyEmail']);
         Route::group(['middleware' => 'auth:sanctum'], function () {
-            Route::get('user', [AuthController::class, 'getUser']);
             Route::post('logout', [AuthController::class, 'postLogout']);
             Route::post('change-password', [AuthController::class, 'postChangePassword']);
             Route::post('update-profile', [AuthController::class, 'postUpdateProfile']);
@@ -32,6 +31,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     // User routes
     Route::group(['prefix' => 'users'], function () {
+        Route::get('user', [UserController::class, 'getUser']);
         Route::get('/', [UserController::class, 'getUsers']);
     });
 

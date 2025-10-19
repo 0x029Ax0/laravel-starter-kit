@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,7 +11,7 @@ class RecoverAccountRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return !auth()->check();
     }
 
     /**
@@ -22,7 +22,7 @@ class RecoverAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "email" => "required|string|email",
         ];
     }
 }
