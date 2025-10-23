@@ -10,6 +10,7 @@ use App\Http\Requests\Auth\DeleteAccountRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\LogoutRequest;
 use App\Http\Requests\Auth\RecoverAccountRequest;
+use App\Http\Requests\Auth\RefreshRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\UpdateProfileRequest;
@@ -40,6 +41,7 @@ final class AuthController extends Controller
             $token = $user->createToken($this->tokenName);
 
             return response()->json([
+                'status' => 'success',
                 'user' => new UserResource($user),
                 'token' => $token->plainTextToken,
             ], 200);
@@ -53,6 +55,7 @@ final class AuthController extends Controller
             $token = $user->createToken($this->tokenName);
 
             return response()->json([
+                'status' => 'success',
                 'user' => new UserResource($user),
                 'token' => $token->plainTextToken,
             ], 200);
@@ -64,7 +67,9 @@ final class AuthController extends Controller
         return $this->handle(function () use ($request) {
             Authentication::recoverAccount($request);
 
-            return response()->json([], 200);
+            return response()->json([
+                'status' => 'success',
+            ], 200);
         });
     }
 
@@ -73,7 +78,9 @@ final class AuthController extends Controller
         return $this->handle(function () use ($request) {
             Authentication::resetPassword($request);
 
-            return response()->json([], 200);
+            return response()->json([
+                'status' => 'success',
+            ], 200);
         });
     }
 
@@ -82,7 +89,9 @@ final class AuthController extends Controller
         return $this->handle(function () use ($request) {
             $user = Authentication::verifyEmail($request);
 
-            return response()->json([], 200);
+            return response()->json([
+                'status' => 'success',
+            ], 200);
         });
     }
 
@@ -91,7 +100,9 @@ final class AuthController extends Controller
         return $this->handle(function () use ($request) {
             Authentication::logout($request);
 
-            return response()->json([], 200);
+            return response()->json([
+                'status' => 'success',
+            ], 200);
         });
     }
 
@@ -100,7 +111,9 @@ final class AuthController extends Controller
         return $this->handle(function () use ($request) {
             $user = Authentication::changePassword($request);
 
-            return response()->json([], 200);
+            return response()->json([
+                'status' => 'success',
+            ], 200);
         });
     }
 
@@ -109,7 +122,9 @@ final class AuthController extends Controller
         return $this->handle(function () use ($request) {
             $user = Authentication::updateProfile($request);
 
-            return response()->json([], 200);
+            return response()->json([
+                'status' => 'success',
+            ], 200);
         });
     }
 
@@ -118,7 +133,9 @@ final class AuthController extends Controller
         return $this->handle(function () use ($request) {
             Authentication::deleteAccount($request);
 
-            return response()->json([], 200);
+            return response()->json([
+                'status' => 'success',
+            ], 200);
         });
     }
 
@@ -194,6 +211,18 @@ final class AuthController extends Controller
 
             // Redirect to the frontend with the token
             return redirect(env('FRONTEND_URL').'/oauth/callback/'.$token);
+        });
+    }
+
+    public function refresh(RefreshRequest $request)
+    {
+        return $this->handle(function () {
+            $user = auth()->user();
+
+            return response()->json([
+                'status' => 'success',
+                'user' => $user,
+            ]);
         });
     }
 }

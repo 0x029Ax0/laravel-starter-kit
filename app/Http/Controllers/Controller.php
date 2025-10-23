@@ -25,7 +25,10 @@ abstract class Controller
             Log::error($e);
 
             // Return generic error message
-            $response = ['message' => 'Internal Server Error'];
+            $response = [
+                'status' => 'error',
+                'message' => 'Internal Server Error',
+            ];
 
             // Add error to response if not in production
             if (! $this->inProduction) {
