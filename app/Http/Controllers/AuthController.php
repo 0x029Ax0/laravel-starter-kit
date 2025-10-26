@@ -37,14 +37,20 @@ final class AuthController extends Controller
     public function postLogin(LoginRequest $request)
     {
         return $this->handle(function () use ($request) {
-            $user = Authentication::login($request);
-            $token = $user->createToken($this->tokenName);
-
-            return response()->json([
-                'status' => 'success',
-                'user' => new UserResource($user),
-                'token' => $token->plainTextToken,
-            ], 200);
+            try {
+                $user = Authentication::login($request);
+                $token = $user->createToken($this->tokenName);
+                return response()->json([
+                    'status' => 'success',
+                    'user' => new UserResource($user),
+                    'token' => $token->plainTextToken,
+                ], 200);
+            } catch (Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 422);
+            }
         });
     }
 
