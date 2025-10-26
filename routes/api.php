@@ -20,11 +20,14 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('change-password', [AuthController::class, 'postChangePassword']);
             Route::post('update-profile', [AuthController::class, 'postUpdateProfile']);
             Route::post('delete-account', [AuthController::class, 'postDeleteAccount']);
+            Route::post('refresh', [AuthController::class, 'postRefresh']);
         });
-        Route::group(['prefix' => 'oauth', 'middleware' => 'web'], function () {
-            Route::get('redirect/{provider}', [AuthController::class, 'getOAuthRedirect']);
-            Route::get('callback/{provider}', [AuthController::class, 'getOAuthCallback']);
-        });
+    });
+
+    // OAuth
+    Route::group(['prefix' => 'oauth', 'middleware' => 'web'], function () {
+        Route::get('redirect/{provider}', [AuthController::class, 'getOAuthRedirect']);
+        Route::get('callback/{provider}', [AuthController::class, 'getOAuthCallback']);
     });
 
     // User routes

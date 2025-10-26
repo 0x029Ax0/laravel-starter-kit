@@ -72,7 +72,9 @@ it('responds with success after account recovery request', function () {
         'email' => 'recover@example.com',
     ]);
 
-    $response->assertOk()->assertExactJson([]);
+    $response->assertOk()->assertExactJson([
+        'status' => 'success',
+    ]);
 
     expect($user->fresh()->password_recovery_code)->not->toBeNull();
 });
@@ -90,7 +92,9 @@ it('responds with success after password reset request', function () {
         'password_confirmation' => 'new-password',
     ]);
 
-    $response->assertOk()->assertExactJson([]);
+    $response->assertOk()->assertExactJson([
+        'status' => 'success',
+    ]);
 
     $user = User::whereEmail('reset@example.com')->first();
     expect(Hash::check('new-password', $user->password))->toBeTrue();
@@ -108,7 +112,9 @@ it('responds with success after email verification request', function () {
         'verification_code' => 'code-123',
     ]);
 
-    $response->assertOk()->assertExactJson([]);
+    $response->assertOk()->assertExactJson([
+        'status' => 'success',
+    ]);
 
     expect($user->fresh()->email_verified_at)->not->toBeNull();
 });
@@ -122,9 +128,26 @@ it('logs out an authenticated user', function () {
 
     $response = postJson('/api/v1/auth/logout');
 
-    $response->assertOk()->assertExactJson([]);
+    $response->assertOk()->assertExactJson([
+        'status' => 'success',
+    ]);
 
     expect($user->fresh()->active_character_id)->toBeNull();
+});
+
+it('refreshes the authenticated user session', function () {
+    $user = User::factory()->create();
+
+    Sanctum::actingAs($user);
+
+    $response = postJson('/api/v1/auth/refresh');
+
+    $response->assertOk()
+        ->assertJson([
+            'status' => 'success',
+        ])
+        ->assertJsonPath('user.id', $user->id)
+        ->assertJsonStructure(['user' => ['id', 'name', 'email']]);
 });
 
 it('changes the password for an authenticated user', function () {
@@ -140,7 +163,9 @@ it('changes the password for an authenticated user', function () {
         'new_password_confirmation' => 'new-password',
     ]);
 
-    $response->assertOk()->assertExactJson([]);
+    $response->assertOk()->assertExactJson([
+        'status' => 'success',
+    ]);
 
     expect(Hash::check('new-password', $user->fresh()->password))->toBeTrue();
 });
@@ -158,7 +183,9 @@ it('updates the profile for an authenticated user', function () {
         'email' => 'new-email@example.com',
     ]);
 
-    $response->assertOk()->assertExactJson([]);
+    $response->assertOk()->assertExactJson([
+        'status' => 'success',
+    ]);
 
     $user->refresh();
     expect($user->name)->toBe('New Name');
@@ -177,7 +204,9 @@ it('deletes the account for an authenticated user', function () {
         'password_confirmation' => 'password',
     ]);
 
-    $response->assertOk()->assertExactJson([]);
+    $response->assertOk()->assertExactJson([
+        'status' => 'success',
+    ]);
 
     expect(User::whereEmail('delete@example.com')->exists())->toBeFalse();
 });

@@ -214,7 +214,7 @@ final class AuthController extends Controller
         });
     }
 
-    public function refresh(RefreshRequest $request)
+    public function postRefresh(RefreshRequest $request)
     {
         return $this->handle(function () {
             $user = auth()->user();
