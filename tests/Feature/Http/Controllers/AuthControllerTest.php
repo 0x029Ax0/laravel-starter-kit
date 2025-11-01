@@ -38,10 +38,10 @@ it('returns an error response when login fails', function () {
         'password' => 'wrong-password',
     ]);
 
-    $response->assertStatus(500)
+    $response->assertStatus(422)
         ->assertJson([
-            'message' => 'Internal Server Error',
-            'error' => 'Invalid credentials',
+            'status' => 'error',
+            'message' => 'Invalid credentials',
         ]);
 });
 
@@ -183,9 +183,19 @@ it('updates the profile for an authenticated user', function () {
         'email' => 'new-email@example.com',
     ]);
 
-    $response->assertOk()->assertExactJson([
-        'status' => 'success',
-    ]);
+    $response->assertOk()
+        ->assertJson([
+            'status' => 'success',
+            'user' => [
+                'id' => $user->id,
+                'name' => 'New Name',
+                'email' => 'new-email@example.com',
+            ],
+        ])
+        ->assertJsonStructure([
+            'status',
+            'user' => ['id', 'name', 'email', 'email_verified', 'avatar_url', 'created_at'],
+        ]);
 
     $user->refresh();
     expect($user->name)->toBe('New Name');
@@ -229,16 +239,17 @@ it('provides an oauth redirect url for a provider', function () {
         ->with('google')
         ->andReturn($driver);
 
-    $response = getJson('/api/v1/auth/oauth/redirect/google');
+    $response = getJson('/api/v1/oauth/redirect/google');
 
     $response->assertOk()->assertJson(['redirect_url' => $redirectUrl]);
 });
 
 it('returns an error when oauth provider is invalid', function () {
-    $response = getJson('/api/v1/auth/oauth/callback/invalid');
+    $response = getJson('/api/v1/oauth/callback/invalid');
 
     $response->assertStatus(500)
         ->assertJson([
+            'status' => 'error',
             'message' => 'Internal Server Error',
             'error' => 'Invalid provider received.',
         ]);
@@ -265,7 +276,7 @@ it('handles oauth callback for a known provider by creating a token', function (
         ->with('google')
         ->andReturn($driver);
 
-    $response = get('/api/v1/auth/oauth/callback/google');
+    $response = get('/api/v1/oauth/callback/google');
 
     $response->assertRedirect();
     $location = $response->headers->get('location');
