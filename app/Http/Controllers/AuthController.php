@@ -40,6 +40,7 @@ final class AuthController extends Controller
             try {
                 $user = Authentication::login($request);
                 $token = $user->createToken($this->tokenName);
+
                 return response()->json([
                     'status' => 'success',
                     'user' => new UserResource($user),
@@ -130,6 +131,7 @@ final class AuthController extends Controller
 
             return response()->json([
                 'status' => 'success',
+                'user' => new UserResource($user),
             ], 200);
         });
     }
@@ -227,7 +229,7 @@ final class AuthController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'user' => $user,
+                'user' => new UserResource($user),
             ]);
         });
     }

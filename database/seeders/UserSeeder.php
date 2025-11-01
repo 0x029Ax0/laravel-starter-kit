@@ -24,7 +24,7 @@ final class UserSeeder extends Seeder
             'email' => 'test@test.nl',
             'email_verified_at' => now(),
             'password' => bcrypt('engeland'),
-            'avatar_url' => 'storage/images/avatars/default.png',
+            'avatar_url' => 'storage/images/avatars/default.jpg',
         ]);
     }
 }

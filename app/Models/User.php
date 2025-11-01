@@ -26,10 +26,11 @@ final class User extends Authenticatable
         'email_verification_code',
         'password',
         'password_recovery_code',
-        'active_character_id',
         'oauth_provider',
         'oauth_provider_id',
         'avatar_url',
+        'created_at',
+        'updated_at',
     ];
 
     /**

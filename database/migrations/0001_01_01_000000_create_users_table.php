@@ -24,7 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('active_character_id')->nullable();
             $table->string('oauth_provider')->nullable();
             $table->string('oauth_provider_id')->nullable();
-            $table->string('avatar_url')->nullable();
+            $table->string('avatar_url')->default('storage/images/users/avatars/default.jpg');
             $table->rememberToken();
             $table->timestamps();
         });

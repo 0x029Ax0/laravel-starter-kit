@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Facades\Images;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\Auth\DeleteAccountRequest;
 use App\Http\Requests\Auth\LoginRequest;
@@ -92,6 +93,11 @@ final class AuthenticationService
         $user = auth()->user();
         $user->name = $request->name;
         $user->email = $request->email;
+
+        if ($request->hasFile('avatar')) {
+            $user->avatar_url = Images::processUpload($request->avatar, 'avatars');
+        }
+
         $user->save();
 
         return $user;
